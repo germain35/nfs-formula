@@ -13,7 +13,7 @@ include:
 {% set min_month = 5 %}
 {% set use_device = (version_year > min_year or (version_year == min_year and version_month >= min_month)) %}
 
-{% for m in salt['pillar.get']('nfs:unmount').iteritems() %}
+{% for m in salt['pillar.get']('nfs:unmount').items() %}
 {{ m[1].mountpoint }}:
   mount.unmounted:
   {% if use_device %}

@@ -1,7 +1,23 @@
 nfs:
+
   server:
-    exports: 
-      /srv/homes: "hostname1(rw,sync,no_subtree_check) hostname2(ro,sync,no_subtree_check)"
+    exports:
+      absent:
+        - /srv/useless
+
+      present:
+
+        /srv/nfs:
+          clients:
+            - hosts: '10.0.2.0/24'
+              options:
+                - 'rw'
+                - 'sync'
+                - 'no_subtree_check'
+            - hosts: '*.example.com'
+              options:
+                - 'rw'
+
   mount:
     somename:
       mountpoint: "/some/path"
@@ -9,9 +25,9 @@ nfs:
       opts: "vers=3,rsize=65535,wsize=65535"
       persist: True
       mkmnt: True
+
   unmount:
     someothername:
       mountpoint: "/some/other/path"
       location: "hostname:/other/path"
       persist: False
-

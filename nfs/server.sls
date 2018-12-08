@@ -4,12 +4,28 @@ nfs-server_pkgs:
   pkg.installed:
     - pkgs: {{ nfs.pkgs_server }}
 
-/etc/exports:
-  file.managed:
-    - source: salt://nfs/files/exports
-    - template: jinja
+{%- if nfs.server.get('exports', False)  %}
+  {%- for dir, params in nfs.server.exports.get('present', {}).items() -%}
+nfs_{{dir}}_export:
+  nfs_export.present:
+    - name: {{dir}}
+    {%- if params is mapping %}
+      {%- for key, value in params.items() %}
+    - {{key}}: {{value}}
+      {%- endfor %}
+    {%- endif %}
     - watch_in:
       - service: nfs_service
+  {%- endfor %}
+
+    {%- for dir in nfs.server.exports.get('absent', []) -%}
+nfs_{{dir}}_export:
+  nfs_export.absent:
+    - name: {{dir}}
+    - watch_in:
+      - service: nfs_service
+  {%- endfor %}
+{%- endif %}
 
 nfs_service:
   service.running:

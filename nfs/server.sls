@@ -5,7 +5,7 @@ nfs-server_pkgs:
     - pkgs: {{ nfs.pkgs_server }}
 
 {%- if nfs.server.get('exports', False)  %}
-  {%- for dir, params in nfs.server.exports.get('present', {}).items() -%}
+  {%- for dir, params in nfs.server.exports.get('present', {}).items() %}
 nfs_{{dir}}_export:
   nfs_export.present:
     - name: {{dir}}
@@ -18,7 +18,7 @@ nfs_{{dir}}_export:
       - service: nfs_service
   {%- endfor %}
 
-    {%- for dir in nfs.server.exports.get('absent', []) -%}
+    {%- for dir in nfs.server.exports.get('absent', []) %}
 nfs_{{dir}}_export:
   nfs_export.absent:
     - name: {{dir}}
